@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="style.css">
+<title>Meu Banco de Horas</title>
+<main>
+    <header>
+        <h1>Meu Banco de Horas</h1>
+        <div class="hint">Calcule sua jornada ou faça as contas do seu saldo.</div>
+    </header>
+    <nav aria-label="Calculadoras"><button class="active" id="tab1" onclick="tab(1)">Jornada de trabalho</button><button
+            id="tab2" onclick="tab(2)">Somar e subtrair</button></nav>
+    <section id="panel1">
+        <div class="grid">
+            <div class="card">
+                <h2>Como foi seu dia?</h2>
+                <div class="fields"><label>Entrada<input id="entry" type="time" value="08:00"></label><label>Saída<input
+                            id="exit" type="time" value="17:00"></label></div>
+                <div class="fields"><label>Intervalo (horas)<input id="breakh" type="number" min="0" max="23"
+                            value="1"></label><label>Minutos<input id="breakm" type="number" min="0" max="59"
+                            value="0"></label></div><label>Jornada prevista<input id="expected" type="time"
+                        value="08:00"></label><label style="flex-direction:row;align-items:center"><input id="nextday"
+                        type="checkbox" style="width:auto"> A saída ocorre no dia seguinte</label>
+                <p id="dayerror" class="error" role="alert"></p><button class="primary" onclick="calculate()">Calcular
+                    jornada</button>
+            </div>
+            <aside>
+                <div class="card result"><small>SALDO DO DIA</small>
+                    <div class="value" id="daybalance">0h00</div>
+                    <div id="worked">8h00 trabalhadas</div>
+                    <p class="hint" id="daydesc">Jornada cumprida.</p>
+                </div>
+                <div class="card hint">Informe o intervalo total do dia. O saldo é a diferença entre as horas
+                    trabalhadas e a jornada prevista.</div>
+            </aside>
+        </div>
+    </section>
+    <section id="panel2" class="hidden">
+        <div class="grid">
+            <div>
+                <div class="card">
+                    <h2>Seu saldo inicial</h2>
+                    <div class="fields"><label>Tipo<select id="initialsign">
+                                <option value="1">Positivo (+)</option>
+                                <option value="-1">Negativo (−)</option>
+                            </select></label><label>Horas<input id="initialh" type="number" min="0"
+                                value="0"></label><label>Minutos<input id="initialm" type="number" min="0" max="59"
+                                value="0"></label></div>
+                    <h2>Adicionar uma movimentação</h2>
+                    <form id="movement">
+                        <div class="fields"><label>Operação<select id="sign">
+                                    <option value="1">Somar (+)</option>
+                                    <option value="-1">Subtrair (−)</option>
+                                </select></label><label>Horas<input id="hours" type="number" min="0"
+                                    value="0"></label><label>Minutos<input id="minutes" type="number" min="0" max="59"
+                                    value="0"></label></div>
+                        <p id="moveerror" class="error" role="alert"></p><button class="primary">Adicionar ao
+                            cálculo</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <h2>Movimentações</h2>
+                    <div id="list"></div>
+                </div>
+            </div>
+            <aside>
+                <div class="card result" aria-live="polite"><small>SALDO FINAL</small>
+                    <div id="total" class="value">0h00</div>
+                    <div id="totaldesc">Saldo zerado</div>
+                    <p class="hint">Horas e minutos de verdade: 60 minutos equivalem a 1 hora.</p>
+                </div><button onclick="resetAll()">Limpar cálculo</button>
+                <p class="hint">O cálculo desta aba fica salvo neste navegador. Você pode remover qualquer lançamento
+                    pelo ×.</p>
+            </aside>
+        </div>
+    </section>
+    <footer>Calculadora de controle pessoal. Os cálculos usam os tempos informados, sem adicionais, arredondamentos ou
+        regras de compensação.</footer>
+</main>
+<script>
+    const $ = id => document.getElementById(id); let movements = []; const fmt = n => `${n < 0 ? '−' : ''}${Math.floor(Math.abs(n) / 60)}h${String(Math.abs(n) % 60).padStart(2, '0')}`; const num = id => Number($(id).value); const valid = id => $(id).value !== '' && Number.isSafeInteger(num(id)) && num(id) >= 0; function tab(n) { [1, 2].forEach(i => { $('panel' + i).classList.toggle('hidden', i !== n); $('tab' + i).classList.toggle('active', i === n) }) } function calculate() { let a = $('entry').value, b = $('exit').value, e = $('expected').value; let err = ''; if (!a || !b || !e || !valid('breakh') || !valid('breakm') || num('breakm') > 59) err = 'Preencha horários e intervalo válidos.'; const t = s => s.split(':').reduce((h, m) => h * 60 + Number(m)); let span = t(b) - t(a) + ($('nextday').checked ? 1440 : 0), work = span - num('breakh') * 60 - num('breakm'); if (!err && (span < 0 || work < 0)) err = 'Confira a saída e o intervalo. Para uma jornada noturna, marque o dia seguinte.'; $('dayerror').textContent = err; if (err) return; let balance = work - t(e); $('daybalance').textContent = (balance > 0 ? '+' : '') + fmt(balance); $('worked').textContent = fmt(work) + ' trabalhadas'; $('daydesc').textContent = balance > 0 ? 'Horas positivas no dia.' : balance < 0 ? 'Horas devidas no dia.' : 'Jornada cumprida.' } function save() { try { localStorage.setItem('banco-horas-v1', JSON.stringify({ movements, h: $('initialh').value, m: $('initialm').value, s: $('initialsign').value })) } catch { } } function render() { let base = (num('initialh') * 60 + num('initialm')) * num('initialsign'); let total = base + movements.reduce((a, b) => a + b, 0); $('total').textContent = (total > 0 ? '+' : '') + fmt(total); $('totaldesc').textContent = total > 0 ? 'Horas positivas' : total < 0 ? 'Horas devidas' : 'Saldo zerado'; $('list').replaceChildren(); if (!movements.length) { let p = document.createElement('p'); p.className = 'hint'; p.textContent = 'Nenhuma movimentação adicionada.'; $('list').append(p) } movements.forEach((v, i) => { let row = document.createElement('div'); row.className = 'row'; let span = document.createElement('span'); span.textContent = `${i + 1}. ${v >= 0 ? '+' : ''}${fmt(v)}`; span.className = v >= 0 ? 'positive' : 'negative'; let btn = document.createElement('button'); btn.textContent = '×'; btn.setAttribute('aria-label', 'Remover movimentação ' + (i + 1)); btn.onclick = () => { movements.splice(i, 1); render() }; row.append(span, btn); $('list').append(row) }); save() } $('movement').onsubmit = e => { e.preventDefault(); if (!valid('hours') || !valid('minutes') || num('minutes') > 59 || num('hours') * 60 + num('minutes') === 0) { $('moveerror').textContent = 'Informe um tempo maior que zero, com minutos entre 0 e 59.'; return } $('moveerror').textContent = ''; movements.push((num('hours') * 60 + num('minutes')) * num('sign')); render(); $('hours').value = 0; $('minutes').value = 0 };['initialh', 'initialm', 'initialsign'].forEach(id => $(id).oninput = () => { if (valid('initialh') && valid('initialm') && num('initialm') <= 59) render() }); function resetAll() { movements = []; $('initialh').value = 0; $('initialm').value = 0; $('initialsign').value = 1; render() } try { let d = JSON.parse(localStorage.getItem('banco-horas-v1')); if (d && Array.isArray(d.movements) && d.movements.every(Number.isSafeInteger)) { movements = d.movements; $('initialh').value = d.h; $('initialm').value = d.m; $('initialsign').value = d.s } } catch { } render(); calculate();
+</script>
+
+</html>

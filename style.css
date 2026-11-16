@@ -1,0 +1,330 @@
+* {
+        box-sizing: border-box
+    }
+
+    body {
+        margin: 0;
+        background: #F7F8FA;
+        color: #20242C;
+        font: 16px system-ui
+    }
+
+    main {
+        max-width: 1000px;
+        margin: 50px auto;
+        padding: 0 22px
+    }
+
+    header {
+        margin-bottom: 30px
+    }
+
+    small {
+        color: #68717F
+    }
+
+    h1 {
+        font-size: 34px;
+        margin: 8px 0
+    }
+
+    nav {
+        display: flex;
+        gap: 8px;
+        margin: 25px 0
+    }
+
+    button {
+        cursor: pointer;
+        border: 0;
+        border-radius: 9px;
+        padding: 13px 20px;
+        background: #EDF0F5;
+        color: #374151;
+        font: inherit
+    }
+
+    button.active,
+    button.primary {
+        background: #6c8bce;
+        color: white
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 24px
+    }
+
+    .card {
+        background: white;
+        border: 1px solid #E5E8EE;
+        border-radius: 18px;
+        padding: 28px;
+        margin-bottom: 20px
+    }
+
+    h2 {
+        font-size: 21px;
+        margin: 0 0 22px
+    }
+
+    .fields {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap
+    }
+
+    label {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 14px;
+        flex: 1;
+        min-width: 110px;
+        margin-bottom: 18px
+    }
+
+    input,
+    select {
+        font: inherit;
+        padding: 12px;
+        border: 1px solid #D9DEE7;
+        border-radius: 8px;
+        width: 100%;
+        background: white;
+        color: #20242C
+    }
+
+    input:focus,
+    select:focus {
+        outline: 2px solid #93B4FC
+    }
+
+    .result {
+        background: #FFFFFF;
+        color: white
+    }
+
+    .result small {
+        color: #68717F
+    }
+
+    .value {
+        font-size: 42px;
+        font-weight: 700;
+        margin: 15px 0
+    }
+
+    .hint {
+        color: #68717F;
+        font-size: 14px;
+        line-height: 1.6
+    }
+
+    .result .hint {
+        color: #68717F
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid #e7edef;
+        padding: 14px 0;
+        gap: 10px
+    }
+
+    .row button {
+        padding: 5px 10px;
+        background: transparent;
+        color: #77858a
+    }
+
+    .positive {
+        color: #238163
+    }
+
+    .negative {
+        color: #8f4d55
+    }
+
+    .error {
+        color: #b32f42;
+        font-size: 14px
+    }
+
+    footer {
+        font-size: 13px;
+        color: #68717F;
+        margin: 25px 0
+    }
+
+    .hidden {
+        display: none
+    }
+
+    @media(max-width:700px) {
+        main {
+            margin: 25px auto
+        }
+
+        .grid {
+            grid-template-columns: 1fr
+        }
+
+        .card {
+            padding: 22px
+        }
+
+        nav button {
+            flex: 1;
+            padding: 12px 8px
+        }
+
+        h1 {
+            font-size: 29px
+        }
+    }
+
+    body {
+        font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
+    }
+
+    header>small {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 1.8px
+    }
+
+    h1 {
+        font-weight: 650;
+        letter-spacing: -1.1px
+    }
+
+    nav {
+        background: #EBEEF3;
+        border: 1px solid #E4E8EF;
+        padding: 5px;
+        border-radius: 12px;
+        width: fit-content;
+        gap: 4px
+    }
+
+    nav button {
+        background: transparent;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 550;
+        padding: 12px 20px
+    }
+
+    nav button.active {
+        background: #fff;
+        color: #6c8bce;
+        box-shadow: 0 1px 3px #20242c0d
+    }
+
+    .card {
+        border-radius: 14px;
+        box-shadow: 0 2px 5px #20242c03
+    }
+
+    h2 {
+        font-weight: 600;
+        letter-spacing: -.4px
+    }
+
+    button {
+        transition: background .15s, transform .15s;
+        font-size: 14px;
+        font-weight: 550
+    }
+
+    button:hover {
+        filter: brightness(.97)
+    }
+
+    button:active {
+        transform: translateY(1px)
+    }
+
+    button.primary {
+        background: linear-gradient(110deg, #aec2ec 0%, #95b7de 60%, #91d1ea 100%);
+        color: #000;
+        border: 1px solid #2563eb20
+    }
+
+    button:focus-visible {
+        outline: 3px solid #93B4FC;
+        outline-offset: 3px
+    }
+
+    input,
+    select {
+        border-radius: 7px;
+        background: #FDFDFE;
+        font-variant-numeric: tabular-nums
+    }
+
+    label {
+        font-weight: 500;
+        color: #495363
+    }
+
+    .result {
+        color: #20242C;
+        position: relative;
+        overflow: hidden;
+        padding-top: 32px
+    }
+
+    .result:before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 4px;
+        background: linear-gradient(90deg, #6c8bce, #417990)
+    }
+
+    .result small {
+        font-size: 11px;
+        letter-spacing: 1.4px;
+        font-weight: 650
+    }
+
+    .result .value {
+        font-size: 48px;
+        letter-spacing: -1.8px;
+        font-variant-numeric: tabular-nums;
+        margin: 18px 0 12px
+    }
+
+    .result .hint {
+        border-top: 1px solid #EDF0F5;
+        padding-top: 16px;
+        margin-top: 22px
+    }
+
+    .row {
+        border-color: #EDF0F5
+    }
+
+    footer {
+        color: #7A8391;
+        line-height: 1.6
+    }
+
+    @media(max-width:1000px) {
+        nav {
+            width: 100%
+        }
+
+        nav button {
+            padding: 12% 10%
+        }
+
+        .result .value {
+            font-size: 42px
+        }
+    }
